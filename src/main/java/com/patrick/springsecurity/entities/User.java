@@ -1,6 +1,8 @@
 package com.patrick.springsecurity.entities;
 
+import com.patrick.springsecurity.controller.dto.LoginRequest;
 import jakarta.persistence.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -66,4 +68,7 @@ public class User {
         this.roles = roles;
     }
 
+    public boolean isLoginCorrect(LoginRequest loginRequest, PasswordEncoder passwordEncoder){
+        return passwordEncoder.matches(loginRequest.password(), this.password);
+    }
 }
