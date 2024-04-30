@@ -9,4 +9,4 @@ services:
       - MYSQL_USER=admin
       - MYSQL_PASSWORD=123
       - MYSQL_DATABASE=springsecurity
-      - MYSQL_ROOT_PASSWORD=123SSS
+      - MYSQL_ROOT_PASSWORD=123
