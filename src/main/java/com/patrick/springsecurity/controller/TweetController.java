@@ -1,11 +1,15 @@
 package com.patrick.springsecurity.controller;
 
 import com.patrick.springsecurity.controller.dto.CreateTweetDto;
+import com.patrick.springsecurity.controller.dto.FeedDto;
+import com.patrick.springsecurity.controller.dto.FeedItemDto;
 import com.patrick.springsecurity.entities.Tweet;
 import com.patrick.springsecurity.repository.TweetRepository;
 import com.patrick.springsecurity.repository.UserRepository;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
@@ -49,5 +53,14 @@ public class TweetController {
         }
 
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/feed")
+    public ResponseEntity<FeedDto> feed(@RequestParam(value = "page", defaultValue = "0") int page,
+                                        @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
+        var tweets = tweetRepository.findAll(PageRequest.of(page, pageSize, Sort.Direction.DESC, "creationTimestamp"))
+                .map(tweet -> new FeedItemDto(tweet.getTweetId(), tweet.getContent(), tweet.getUser().getUsername()));
+
+        return ResponseEntity.ok(new FeedDto(tweets.getContent(),page, pageSize, tweets.getTotalPages(), tweets.getTotalElements()));
     }
 }
